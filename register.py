@@ -3,6 +3,7 @@ import dlib
 import os
 import tkinter as tk
 from tkinter import messagebox
+import dataset_augmentation
 
 # Inisialisasi webcam
 cap = cv2.VideoCapture(0)
@@ -63,7 +64,7 @@ def capture_with_confirmation(prompt, count_start, count_limit):
             # Potong wajah dari frame
             face_image = frame[y:y + h, x:x + w]
 
-            # Ubah ukuran gambar menjadi 250x300 pixel
+            # Ubah ukuran gambar menjadi 224x224 pixel
             face_image = cv2.resize(face_image, (224, 224))
 
             # Simpan gambar dengan label
@@ -93,10 +94,10 @@ os.makedirs(folder_path, exist_ok=True)
 # Alur pengambilan gambar dengan konfirmasi
 confirmation_prompts = [
     "Mohon posisikan diri Anda di depan kamera dengan sikap yang normal. Tekan 'OK' untuk melanjutkan.",
-    "Mohon lepaskan atribut yang sedang Anda gunakan. Tekan 'OK' untuk melanjutkan.",
     "Mohon ubah ekspresi Anda. Tekan 'OK' untuk melanjutkan.",
     "Mohon hadapkan wajah ke arah serong kanan. Tekan 'OK' untuk melanjutkan.",
     "Mohon hadapkan wajah ke arah serong kiri. Tekan 'OK' untuk melanjutkan.",
+    "Mohon lepaskan atribut yang sedang Anda gunakan. Tekan 'OK' untuk melanjutkan.",
 ]
 
 # Inisialisasi variabel count_start
@@ -106,6 +107,9 @@ for prompt in confirmation_prompts:
     if not capture_with_confirmation(prompt, count_start, 100):
         break
     count_start += 100
+
+# Panggil fungsi augment_dataset setelah proses pengambilan gambar dari kamera selesai
+dataset_augmentation.augment_dataset(student_name)
 
 # Tutup webcam
 cap.release()
