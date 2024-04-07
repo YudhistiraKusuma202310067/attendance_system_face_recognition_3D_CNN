@@ -1,55 +1,24 @@
 import os
-import random
-import shutil
 import cv2
 import numpy as np
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
-from keras import layers, models
+from keras import layers, models, Model
+import matplotlib.pyplot as plt
+from mtcnn import MTCNN
+from keras.models import load_model, Sequential
+from keras.preprocessing import image
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
 
-# Mendapatkan daftar nama folder mahasiswa di dalam folder "dataset"
-mahasiswa_folders = os.listdir("dataset")
-
-# Membuat folder untuk dataset testing
-testing_folder = "dataset_testing"
-os.makedirs(testing_folder, exist_ok=True)
-
-# Inisialisasi list untuk menyimpan path file gambar yang dipilih
-selected_images = []
-
-# Iterasi melalui setiap folder mahasiswa
-for mahasiswa_name in mahasiswa_folders:
-    # Path ke folder mahasiswa
-    mahasiswa_folder_path = os.path.join("dataset", mahasiswa_name)
-    
-    # Mendapatkan daftar gambar dari folder mahasiswa
-    image_files = os.listdir(mahasiswa_folder_path)
-    
-    # Mengambil 10 gambar secara acak
-    random_images = random.sample(image_files, 10)
-    
-    # Menambahkan path file gambar yang dipilih ke dalam list
-    for image in random_images:
-        selected_images.append(os.path.join(mahasiswa_folder_path, image))
-
-# Mengacak urutan gambar
-random.shuffle(selected_images)
-
-# Menyalin gambar-gambar yang dipilih ke folder dataset testing dengan label 1 hingga 50
-for idx, image_path in enumerate(selected_images, start=1):
-    dst = os.path.join(testing_folder, f"{idx}.jpg")
-    shutil.copyfile(image_path, dst)
-
-print("Selesai Dataset_Testing")
-
-print("Starting Training")
 # Function to load the dataset for training
 def load_dataset(dataset_folder):
     images = []
     labels = []
     
-    # Create a mapping dictionary for folder names to integer labels
+    # Create an empty mapping dictionary
     label_map = {}
+    
     for idx, folder_name in enumerate(os.listdir(dataset_folder)):
         label_map[folder_name] = idx
     
@@ -63,7 +32,8 @@ def load_dataset(dataset_folder):
             image = cv2.resize(image, (224, 224))
             images.append(image)
             labels.append(label)  # Use the integer label
-    return np.array(images), np.array(labels)
+            
+    return np.array(images), np.array(labels), label_map
 
 # Function to preprocess the images
 def preprocess_images(images):
@@ -72,41 +42,121 @@ def preprocess_images(images):
     return images
 
 # Load the dataset for training
-training_images, training_labels = load_dataset("dataset")
+training_images, training_labels, label_map = load_dataset("dataset")
 training_images = preprocess_images(training_images)
 
 # Split the dataset into training and validation sets
 X_train, X_val, y_train, y_val = train_test_split(training_images, training_labels, test_size=0.2, random_state=42)
 
-# Define the CNN model architecture
-def create_model(input_shape, num_classes):
-    inputs = tf.keras.Input(input_shape)
+# # Define the CNN model architecture
+# def create_model(input_shape, num_classes):
+#     inputs = tf.keras.Input(input_shape)
 
-    x = layers.Conv2D(filters=32, kernel_size=3, activation="relu")(inputs)
-    x = layers.MaxPool2D(2,2)(x)
-    x = layers.BatchNormalization()(x)
+#     x = layers.Conv2D(filters=32, kernel_size=3, activation="relu")(inputs)
+#     x = layers.MaxPool2D(2,2)(x)
+#     x = layers.BatchNormalization()(x)
 
-    x = layers.Conv2D(filters=64, kernel_size=3, activation="relu")(x)
-    x = layers.MaxPool2D(2,2)(x)
-    x = layers.BatchNormalization()(x)
+#     x = layers.Conv2D(filters=64, kernel_size=3, activation="relu")(x)
+#     x = layers.MaxPool2D(2,2)(x)
+#     x = layers.BatchNormalization()(x)
 
-    x = layers.Conv2D(filters=128, kernel_size=3, activation="relu")(x)
-    x = layers.MaxPool2D(2,2)(x)
-    x = layers.BatchNormalization()(x)
+#     x = layers.Conv2D(filters=128, kernel_size=3, activation="relu")(x)
+#     x = layers.MaxPool2D(2,2)(x)
+#     x = layers.BatchNormalization()(x)
 
-    x = layers.Conv2D(filters=256, kernel_size=3, activation="relu")(x)
-    x = layers.MaxPool2D(2,2)(x)
-    x = layers.BatchNormalization()(x)
+#     # x = layers.Conv2D(filters=256, kernel_size=3, activation="relu")(x)
+#     # x = layers.MaxPool2D(2,2)(x)
+#     # x = layers.BatchNormalization()(x)
 
-    x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(units=512, activation="relu")(x)
-    x = layers.Dropout(0.3)(x)
+#     x = layers.GlobalAveragePooling2D()(x)
+#     x = layers.Dense(units=256, activation="relu")(x)
+#     x = layers.Dropout(0.3)(x)
 
-    outputs = layers.Dense(units=num_classes, activation="softmax")(x)
+#     outputs = layers.Dense(units=num_classes, activation="softmax")(x)
 
-    # Define the model
-    model = tf.keras.Model(inputs, outputs, name="2dcnn")
+#     # Define the model
+#     model = tf.keras.Model(inputs, outputs, name="2dcnn")
     
+#     return model
+
+# def create_model(input_shape, num_classes):
+#     inputs = tf.keras.Input(input_shape)
+
+#     x = layers.Conv2D(filters=64, kernel_size=3, activation="relu")(inputs)
+#     x = layers.Conv2D(filters=64, kernel_size=3, activation="relu")(x)
+#     x = layers.MaxPool2D(2, 2)(x)
+
+#     x = layers.Conv2D(filters=128, kernel_size=3, activation="relu")(x)
+#     x = layers.Conv2D(filters=128, kernel_size=3, activation="relu")(x)
+#     x = layers.MaxPool2D(2, 2)(x)
+
+#     x = layers.Flatten()(x)
+#     x = layers.Dense(units=128, activation="relu")(x)
+#     x = layers.Dense(units=64, activation="relu")(x)
+#     outputs = layers.Dense(units=num_classes, activation="softmax")(x)
+
+#     model = tf.keras.Model(inputs, outputs, name="2dcnn")
+
+#     return model
+
+# def create_model(input_shape, num_classes):
+#     inputs = layers.Input(input_shape)
+
+#     x = layers.Conv2D(64, (3, 3), activation='relu', padding='same')(inputs)
+#     x = layers.Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+#     x = layers.MaxPooling2D((2, 2))(x)
+
+#     x = layers.Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+#     x = layers.Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+#     x = layers.MaxPooling2D((2, 2))(x)
+
+#     x = layers.Flatten()(x)
+#     x = layers.Dense(128, activation='relu')(x)
+#     x = layers.Dense(64, activation='relu')(x)
+#     x = layers.Dense(num_classes)(x)
+#     outputs = layers.Activation('softmax')(x)
+
+#     model = Model(inputs, outputs)
+#     return model
+
+# def create_model(input_shape, num_classes):
+#     inputs = layers.Input(input_shape)
+
+#     x = layers.Conv2D(64, (3, 3), activation='relu')(inputs)
+#     x = layers.Conv2D(64, (3, 3), activation='relu')(x)
+#     x = layers.MaxPooling2D((2, 2))(x)
+
+#     x = layers.Conv2D(128, (3, 3), activation='relu')(x)
+#     x = layers.Conv2D(128, (3, 3), activation='relu')(x)
+#     x = layers.MaxPooling2D((2, 2))(x)
+
+#     x = layers.Flatten()(x)
+#     x = layers.Dense(128, activation='relu')(x)
+#     x = layers.Dense(64, activation='relu')(x)
+#     x = layers.Dense(num_classes)(x)
+#     outputs = layers.Activation('softmax')(x)
+
+#     model = Model(inputs, outputs)
+#     return model
+
+def create_model(input_shape, num_classes):
+    model = Sequential()
+
+    model.add(layers.Conv2D(64, (3,3), padding='valid', activation='relu', input_shape=input_shape))
+    model.add(layers.Conv2D(64, (3,3), padding='valid', activation='relu', input_shape=input_shape))
+    model.add(layers.MaxPooling2D(pool_size=(2,2)))
+
+    model.add(layers.Conv2D(128, (3,3), padding='valid', activation='relu'))
+    model.add(layers.Conv2D(128, (3,3), padding='valid', activation='relu'))
+    model.add(layers.MaxPooling2D(pool_size=(2,2)))
+
+    model.add(layers.Flatten())
+
+    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dense(num_classes))
+    model.add(layers.Activation('softmax'))
+
     return model
 
 # Define input shape and number of classes
@@ -125,30 +175,53 @@ model.compile(optimizer='adam',
 model.summary()
 
 # Train the model
-history = model.fit(X_train, y_train, epochs=1, batch_size=32, 
+history = model.fit(X_train, y_train, epochs=10, batch_size=32, 
                     validation_data=(X_val, y_val))
-
-# Evaluate the model on the testing dataset
-def load_testing_dataset(dataset_folder):
-    images = []
-    labels = []
-    for img_name in os.listdir(dataset_folder):
-        img_path = os.path.join(dataset_folder, img_name)
-        image = cv2.imread(img_path)
-        # Resize the image to match the input shape of the model
-        image = cv2.resize(image, (224, 224))
-        images.append(image)
-        labels.append(int(img_name.split('.')[0]))  # Assuming image names are the labels
-    return np.array(images), np.array(labels)
-
-testing_images, testing_labels = load_testing_dataset("dataset_testing")
-testing_images = preprocess_images(testing_images)
-
-# Evaluate the model on the testing dataset
-test_loss, test_accuracy = model.evaluate(testing_images, testing_labels)
-print(f"Test Accuracy: {test_accuracy}")
 
 # Save the entire model to a single .h5 file
 model_save_path = "model"
 os.makedirs(model_save_path, exist_ok=True)
-model.save(os.path.join(model_save_path, "model.h5"))
+model.save(os.path.join(model_save_path, "face_model.h5"))
+
+# Plotting training and validation accuracy
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.title('Training and Validation Accuracy')
+plt.legend()
+plt.show()
+
+# Plotting training and validation loss
+plt.plot(history.history['loss'], label='Training Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Training and Validation Loss')
+plt.legend()
+plt.show()
+
+# Predict validation set
+y_pred = model.predict(X_val)
+y_pred_classes = np.argmax(y_pred, axis=1)
+
+# Confusion matrix
+cm = confusion_matrix(y_val, y_pred_classes)
+
+# Plot confusion matrix
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False)
+plt.xlabel('Predicted labels')
+plt.ylabel('True labels')
+plt.title('Confusion Matrix')
+plt.show()
+
+# Membuat dictionary pemetaan antara label numerik dan nama kelas
+label_to_class = {v: k for k, v in label_map.items()}
+
+# Mengubah label numerik menjadi nama kelas
+y_val_classes = [label_to_class[label] for label in y_val]
+y_pred_classes = [label_to_class[label] for label in y_pred_classes]
+
+# Classification report
+print(classification_report(y_val_classes, y_pred_classes))
