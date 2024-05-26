@@ -1,0 +1,51 @@
+{
+    "Select Class" : {
+        "Kode_MK" : "-",
+        "Kelas" : "-",
+        "Kode" : "-",
+        "No_Urut" : "-",
+        "Waktu" : "-",
+        "Dosen_Pengajar" : "-",
+        "RPS" : "-",
+        "Nama_Dosen" : "-",
+        "Pertemuan_Ke" : "-",
+        "Hari" : "-",
+        "Ruang" : "-",
+        "student" : [
+        ]
+    },
+    "Pengolahan Citra" : {
+        "Kode_MK" : "TIFA20P1",
+        "Kelas" : "TI-20-PA",
+        "Kode" : "SCH",
+        "No_Urut" : "202320001",
+        "Waktu" : "07.00 - 09.00",
+        "RPS" : "RPS_Pengolahan_Citra",
+        "Nama_Dosen" : "Septian Cahyadi",
+        "Pertemuan_Ke" : "1 dari 5 pertemuan",
+        "Hari" : "Jumat",
+        "Ruang" : "302",
+        "student" : [
+            {"npm" : "202310001", "name" : "Raihan Dwi Pratama"},
+            {"npm" : "202310002", "name" : "Raihan Dwi Win Cahya"},
+            {"npm" : "202310003", "name" : "Michael Mervin Ruswan"}
+        ]
+    },
+    "Pemrograman Perangkat Bergerak" : {
+        "Kode_MK" : "TIFA20P2",
+        "Kelas" : "TI-20-PA1",
+        "Kode" : "FBD",
+        "No_Urut" : "202320002",
+        "Waktu" : "10.00 - 12.00",
+        "RPS" : "RPS_Pemrograman_Perangkat_Bergerak",
+        "Nama_Dosen" : "Febri Damatraseta Fairuz",
+        "Pertemuan_Ke" : "2 dari 5 pertemuan",
+        "Hari" : "Sabtu",
+        "Ruang" : "215",
+        "student" : [
+            {"npm" : "202310004", "name" : "Raiyana Jan Winata"},
+            {"npm" : "202310005", "name" : "Muhammad Ilham"},
+            {"npm" : "202310006", "name" : "Yudhistira Kusuma"}
+        ]
+    }
+}

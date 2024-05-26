@@ -64,13 +64,13 @@ root.title("Input Nama Mahasiswa")
 
 # Label untuk tampilan webcam
 label_webcam = tk.Label(root)
-label_webcam.pack(side="left")
+label_webcam.pack(side="left", padx=10, pady=10)
 
 # Label dan Entry untuk input nama mahasiswa
 name_label = tk.Label(root, text="Nama Mahasiswa:")
 name_label.pack()
 name_entry = tk.Entry(root)
-name_entry.pack()
+name_entry.pack(padx=10, pady=10)
 
 # Tombol Ambil Gambar
 ambil_button = tk.Button(root, text="Ambil Gambar", command=on_ambil_gambar_clicked)

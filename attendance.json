@@ -1,0 +1,43 @@
+{
+    "Pemrograman Perangkat Bergerak": {
+        "Kode_MK": "TIFA20P2",
+        "Nama_MK": "Pemrograman Perangkat Bergerak",
+        "Kelas": "TI-20-PA1",
+        "Nama_Kelas": "TI-20-PA1",
+        "Kode": "FBD",
+        "Nama_Dosen": "Febri Damatraseta Fairuz",
+        "No_Urut": "202320002",
+        "Pertemuan_Ke": "2 dari 5 pertemuan",
+        "Tanggal": "04-05-2024",
+        "Hari": "Sabtu",
+        "Waktu": "10.00 - 12.00",
+        "Ruang": "215",
+        "Dosen_Pengajar": "FBD",
+        "Nama": "Febri Damatraseta Fairuz",
+        "RPS": "RPS_Pemrograman_Perangkat_Bergerak",
+        "Alasan": "Halo",
+        "Evaluasi_Pembelajaran": "Test",
+        "Mulai_Absensi": "Saturday, 04 May 2024 17:03:56",
+        "Akhir_Absensi": "Saturday, 04 May 2024 17:04:14",
+        "student": [
+            {
+                "npm": "202310004",
+                "name": "Raiyana Jan Winata",
+                "status": "Sakit",
+                "timestamp": "-"
+            },
+            {
+                "npm": "202310005",
+                "name": "Muhammad Ilham",
+                "status": "Izin",
+                "timestamp": "-"
+            },
+            {
+                "npm": "202310006",
+                "name": "Yudhistira Kusuma",
+                "status": "Hadir",
+                "timestamp": "04 May 2024 17:03:58"
+            }
+        ]
+    }
+}

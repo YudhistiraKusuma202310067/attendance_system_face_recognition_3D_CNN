@@ -64,7 +64,7 @@ root.title("IBI Kesatuan Attendance System")
 
 # Buat label untuk menampilkan webcam view
 label_webcam = tk.Label(root)
-label_webcam.pack(side=tk.LEFT)
+label_webcam.pack(side=tk.LEFT, padx=10, pady=10)
 
 # Buat tombol-tombol untuk register, training, dan attendance
 register_button = tk.Button(root, text="Register", command=call_register)
