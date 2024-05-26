@@ -36,7 +36,8 @@ def test(image, model_dir, device_id):
     image_cropper = CropImage()
     # image = cv2.imread(SAMPLE_IMAGE_PATH + image_name)
     image = cv2.resize(image, (int(image.shape[0] * 3 / 4), image.shape[0]))
-    result = check_image(image)
+    # result = check_image(image)
+    result = True
     if result is False:
         return
     image_bbox = model_test.get_bbox(image)

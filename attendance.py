@@ -11,6 +11,7 @@ import json
 from datetime import datetime
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Side
+import matplotlib.pyplot as plt
 from Silent_Face_Anti_Spoofing_master.test import test
 
 # Load trained model
@@ -279,22 +280,37 @@ def update_frame():
         # Detect faces using MTCNN
         faces = detector.detect_faces(frame)
 
-        label = test(image=frame,
+        if faces:
+            no_faces_count = 0
+            for face in faces:
+                #Anti Spoof
+                x, y, w, h = face['box']
+                top_limit = max(0, y - 75)
+                bottom_limit = min(frame.shape[0], y + h + 75)
+                left_limit = max(0, x - 75)
+                right_limit = min(frame.shape[1], x + w + 75)
+                    
+                # Crop area dari rambut hingga leher dengan area yang diperluas
+                face_img_spoof = frame[top_limit:bottom_limit, left_limit:right_limit]
+
+                # plt.imshow(face_img_spoof)
+                # plt.axis('off')  # Turn off axis
+                # plt.show()
+
+                label = test(image=face_img_spoof,
                      model_dir="Silent_Face_Anti_Spoofing_master/resources/anti_spoof_models",
                      device_id=0)
 
-        if label == 1:
-            if faces:
-                no_faces_count = 0
-                for face in faces:
-                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                #Predict
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-                    x, y, w, h = face['box']
-                    face_img = gray[y:y+h, x:x+w]
-                    face_img = cv2.resize(face_img, (50, 50))
-                    face_img = face_img.reshape(1, 50, 50, 1)  # Reshape sesuai dengan dimensi model
+                x, y, w, h = face['box']
+                face_img = gray[y:y+h, x:x+w]
+                face_img = cv2.resize(face_img, (50, 50))
+                face_img = face_img.reshape(1, 50, 50, 1)  # Reshape sesuai dengan dimensi model
 
-                    # Recognize face
+                # Recognize face
+                if label == 1:
                     result = model.predict(face_img)
                     idx = result.argmax(axis=1)
                     confidence = result.max(axis=1) * 100
@@ -307,41 +323,19 @@ def update_frame():
                             predicted_as = "N/A"
 
                         print("Predicted as :", labels[i], "Persentase:", confidence)
-
-                    # Draw rectangle around face
-                    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
-
-                    # Display label and confidence
-                    cv2.putText(frame, predicted_as, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-            else:
-                # Faces not detected, increment no_faces_count
-                no_faces_count += 1
-                if no_faces_count >= 10:
-                    end_attendance_status = True
-
-        else:
-            if faces:
-                no_faces_count = 0
-                for face in faces:
-                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-                    x, y, w, h = face['box']
-                    face_img = gray[y:y+h, x:x+w]
-                    face_img = cv2.resize(face_img, (50, 50))
-                    face_img = face_img.reshape(1, 50, 50, 1)  # Reshape sesuai dengan dimensi model
-
+                else:
                     predicted_as = "Fake Face Detected!!!"
 
-                    # Draw rectangle around face
-                    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
+                # Draw rectangle around face
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
 
-                    # Display label and confidence
-                    cv2.putText(frame, predicted_as, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-            else:
-                # Faces not detected, increment no_faces_count
-                no_faces_count += 1
-                if no_faces_count >= 10:
-                    end_attendance_status = True
+                # Display label and confidence
+                cv2.putText(frame, predicted_as, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        else:
+            # Faces not detected, increment no_faces_count
+            no_faces_count += 1
+            if no_faces_count >= 10:
+                end_attendance_status = True
 
         # Convert the frame to a format that Tkinter can display
         img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
