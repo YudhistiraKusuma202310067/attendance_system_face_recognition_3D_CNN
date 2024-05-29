@@ -2,6 +2,7 @@ import tkinter as tk
 import subprocess
 import cv2
 import PIL.Image, PIL.ImageTk
+from tkinter import messagebox
 
 def call_register():
     root.withdraw()  # Menyembunyikan jendela aplikasi
@@ -12,6 +13,7 @@ def call_register():
     show_webcam()  # Memulai kembali tampilan webcam setelah proses register selesai
 
 def call_training():
+    messagebox.showinfo("Training", "Proses training dimulai, mohon tunggu hingga proses training selesai")
     subprocess.Popen(["python", "training_fixed.py"])
 
 def call_attendance():
