@@ -135,17 +135,19 @@ def img_augmentation(img):
 
 # """Cuman testing abaikan"""
 
-# plt.imshow(images[20], cmap="gray")
+# plt.imshow(images[0], cmap="gray")
 
 # #testing image augmented
-# img_test = images[20]
+# img_test = images[0]
 
 # augmented_image_test = img_augmentation(img_test)
 
-# plt.figure(figsize=(15,10))
+# plt.figure(figsize=(5,5))
 # for i, img in enumerate(augmented_image_test):
 #     plt.subplot(4,5,i+1)
 #     plt.imshow(img, cmap="gray")
+#     plt.axis('off')
+# plt.subplots_adjust(wspace=0.05, hspace=0.05)
 # plt.show()
 
 # """Coba ke seluruh dataset untuk augmented

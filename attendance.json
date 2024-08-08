@@ -8,17 +8,17 @@
         "Nama_Dosen": "Febri Damatraseta Fairuz",
         "No_Urut": "202320002",
         "Pertemuan_Ke": "2 dari 5 pertemuan",
-        "Tanggal": "28-05-2024",
+        "Tanggal": "24-07-2024",
         "Hari": "Sabtu",
         "Waktu": "10.00 - 12.00",
         "Ruang": "215",
         "Dosen_Pengajar": "FBD",
         "Nama": "Febri Damatraseta Fairuz",
         "RPS": "RPS_Pemrograman_Perangkat_Bergerak",
-        "Alasan": "",
-        "Evaluasi_Pembelajaran": "",
-        "Mulai_Absensi": "Tuesday, 28 May 2024 02:51:45",
-        "Akhir_Absensi": "Tuesday, 28 May 2024 02:52:06",
+        "Alasan": "Test",
+        "Evaluasi_Pembelajaran": "Gais",
+        "Mulai_Absensi": "Wednesday, 24 July 2024 18:40:58",
+        "Akhir_Absensi": "Wednesday, 24 July 2024 18:41:37",
         "student": [
             {
                 "npm": "202310004",
@@ -29,14 +29,14 @@
             {
                 "npm": "202310005",
                 "name": "Muhammad Ilham",
-                "status": "Alpha",
+                "status": "Sakit",
                 "timestamp": "-"
             },
             {
                 "npm": "202310006",
                 "name": "Yudhistira Kusuma",
                 "status": "Hadir",
-                "timestamp": "28 May 2024 02:51:47"
+                "timestamp": "24 Jul 2024 18:41:35"
             }
         ]
     }

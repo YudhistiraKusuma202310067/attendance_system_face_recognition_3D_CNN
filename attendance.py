@@ -108,12 +108,15 @@ def clear_table():
     student_table.delete(*student_table.get_children())
 
 # Function to update status and timestamp based on face recognition
-def update_status_and_timestamp(student_name):
+def update_status_and_timestamp(student_name, timestamp_start):
     for row_id in student_table.get_children():
         student = student_table.item(row_id)["values"]
         if student[2] == student_name:
             if student[4] == "-":  # Check if timestamp is empty
                 student_table.item(row_id, values=(student[0], student[1], student[2], "Hadir", datetime.now().strftime("%d %b %Y %H:%M:%S")))
+                timestamp_end =  datetime.now()
+                detected_face = (timestamp_end - timestamp_start).total_seconds() * 1000
+                print("Waktu Deteksi Wajah: ", detected_face)
             break
 
 # Function to load data from JSON and display it
@@ -311,6 +314,7 @@ def update_frame():
 
                 # Recognize face
                 if label == 1:
+                    timestamp_start = datetime.now()
                     result = model.predict(face_img)
                     idx = result.argmax(axis=1)
                     confidence = result.max(axis=1) * 100
@@ -318,7 +322,7 @@ def update_frame():
                     for i in idx:
                         if confidence > 80:
                             predicted_as = "%s (%.2f %%)" % (labels[i], confidence)
-                            update_status_and_timestamp(labels[i])
+                            update_status_and_timestamp(labels[i], timestamp_start)
                         else:
                             predicted_as = "N/A"
 
